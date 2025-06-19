@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Indonesia - Wisata Nusantara</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #f4f4f4;
+      color: #333;
+      opacity: 0;
+      animation: fadeInBody 1.5s ease-in forwards;
+    }
+    @keyframes fadeInBody {
+      to {
+        opacity: 1;
+      }
+    }
+    header {
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    header h1 {
+      font-size: 3rem;
+      background: rgba(128,128,128,0.5);
+      padding: 20px;
+      border-radius: 10px;
+      animation: slideDown 1s ease-out;
+    }
+    @keyframes slideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background-color: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      animation: fadeInNav 2s ease-out;
+    }
+    @keyframes fadeInNav {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      margin: 0 0.5rem;
+    }
+    section {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+      animation: fadeInSection 2s ease-in-out;
+    }
+    @keyframes fadeInSection {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* INI untuk semua section lain tetap grid (Destinasi, Kuliner, dll) */
+.destinations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+/* INI khusus bagian akomodasi agar scroll horizontal */
+#akomodasi .destinations {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+}
+#akomodasi .card {
+  min-width: 250px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+#kuliner .destinations {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; /* agar mulus di iOS */
+}
+
+#kuliner .card {
+  min-width: 250px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+#rencana .card {
+  min-width: 250px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card h3 {
+      padding: 1rem;
+      font-size: 1.2rem;
+    
+    }
+    footer {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      animation: fadeInFooter 2s ease-out;
+    }
+    @keyframes fadeInFooter {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+        padding: 15px;
+      }
+      nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      nav a {
+        font-size: 0.9rem;
+        margin: 0.2rem;
+      }
+      .card h3 {
+        font-size: 1rem;
+      }
+    }
+      .menu-toggle {
+      display: none;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 1rem;
+    }
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      nav.hidden {
+        display: none;
+      }
+      nav {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+      }
+    }
+    
+    .floating-menu:hover {
+      background: #555;
+    }
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      font-size: 1.5rem;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      z-index: 1000;
+    }
+    .scroll-top-btn:hover {
+      background: #555;
+    }
+</style>
+</head>
+<body>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <nav id="navbar" class="hidden">
+    <img src="images/Logo/logowebsite.png" alt="Explore Indonesia Logo" style="height: 60px; width: 60px; border-radius: 50%; margin-right:  1rem;">
+    <a href="#">Beranda</a>
+    <a href="#destinasi">Destinasi</a>
+    <a href="#akomodasi">Akomodasi</a>
+    <a href="#kuliner">Kuliner</a>
+    <a href="#panduan">Panduan</a>
+    <a href="#rencana">Rencanakan Perjalanan</a>
+    <a href="#kontak">Kontak</a>
+    <a href="#tentang">Tentang</a>
+
+  </nav>
+
+  <div style="display: flex; justify-content: flex-end; padding: 0.5rem 2rem; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+  <select style="padding: 0.3rem 0.5rem; font-weight: 600;">
+    <option value="id">ID</option>
+    <option value="en">EN</option>
+    <option value="jp">JP</option>
+    <option value="ru">RU</option>
+    <option value="kr">KR</option>
+  </select>
+</div>
+  </div>
+
+  <header>
+    <h1>Explore Indonesia<br>Pesona Wisata Nusantara</h1>
+  </header>
+
+  <section id="destinasi" class="reveal">
+  <h2 style="text-align:center; margin-bottom:1.5rem;">Destinasi Populer</h2>
+  <div class="destinations">
+    <div class="card reveal">
+      <img src="images/tanatoraja.jpg" alt="Tana Toraja">
+      <h3>Tana Toraja, Sulawesi Selatan</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/rajaampat.jpg" alt="Raja Ampat">
+      <h3>Raja Ampat, Papua</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/danaukelimutu.jpg" alt="Danau Kelimutu">
+      <h3>Danau Kelimutu, NTT</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/danautoba.jpg" alt="Danau Toba">
+      <h3>Danau Toba, Sumatera Utara</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/kawahijen.jpg" alt="Kawah Ijen">
+      <h3>Kawah Ijen, Banyuwangi</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/kepulauanderawan.jpg" alt="Kepulauan Derawan">
+      <h3>Kepulauan Derawan, Kalimantan Timur</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/pulauweh.jpg" alt="Pulau Weh">
+      <h3>Pulau Weh, Aceh</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/labuanbajo.jpg" alt="Labuan Bajo">
+      <h3>Labuan Bajo, NTT</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/tamannasionaltanjungputing.jpg" alt="Tanjung Puting">
+      <h3>Taman Nasional Tanjung Puting, Kalteng</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/borobudur.jpg" alt="Borobudur">
+      <h3>Candi Borobudur, Jawa Tengah</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/ubud.jpg" alt="Ubud">
+      <h3>Ubud, Bali</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/bromo.jpg" alt="Bromo">
+      <h3>Gunung Bromo, Jawa Timur</h3>
+    </div>
+  </div>
+</section>
+
+  
+  <section id="akomodasi">
+  <h2 style="text-align:center; margin-bottom:1.5rem;">Akomodasi</h2>
+  <div class="destinations">
+    <div class="card"><img src="images/Akomodasi/shanaya.jpg" alt="Hotel Borobudur"><h3>Hotel Borobudur, Jawa Tengah</h3></div>
+    <div class="card"><img src="images/Akomodasi/nusapenida.jpg" alt="Homestay Bali"><h3>Homestay Nusa Penida, Bali</h3></div>
+    <div class="card"><img src="images/Akomodasi/bobocabinijen.jpg" alt="Bobocabin Ijen"><h3>Bobocabin Ijen, Banyuwangi</h3></div>
+    <div class="card"><img src="images/Akomodasi/danautobaintcottage.jpg" alt="Toba In"><h3>Toba In Cottage, Danau Toba, Sumatera Utara</h3></div>
+    <div class="card"><img src="images/Akomodasi/derawannoahmaratau.jpg" alt="Noah Maratua Resort"><h3>Noah Maratua Resort, Derawan, Kalimantan Timur</h3></div>
+    <div class="card"><img src="images/Akomodasi/kelimutuparadiso.jpg" alt="Paradiso Kelimutu"><h3>Paradiso Homestay, Kelimutu, NTT</h3></div>
+    <div class="card"><img src="images/Akomodasi/labuanbajoseasta.jpg" alt="Seasta Bajo"><h3>Seasta Bajo, Labuan Bajo, NTT</h3></div>
+    <div class="card"><img src="images/Akomodasi/tamannasionalarselahotel.jpg" alt="Arsela Hotel"><h3>Arsela Hotel, Taman Nasional Tanjung Puting, Kalteng</h3></div>
+    <div class="card"><img src="images/Akomodasi/torajamisiliana.jpg" alt="Misiliana Hotel Toraja"><h3>Hotel Misiliana, Tana Toraja, Sulawesi Selatan</h3></div>
+    <div class="card"><img src="images/Akomodasi/wehoceanresort.jpg" alt="Weh Island Resort"><h3>Ocean View Resort, Pulau Weh, Aceh</h3></div>
+    <div class="card"><img src="images/Akomodasi/yenbianus.jpg" alt="Yenbainus Homestay"><h3>Yenbainus Homestay, Raja Ampat, Papua Barat</h3></div>
+    <div class="card"><img src="images/Akomodasi/bromohotellava.jpg" alt="Lava View Hotel"><h3>Hotel Lava View, Gunung Bromo, Jawa Timur</h3></div>
+  </div>
+</section>
+
+
+  <section id="kuliner" class="reveal">
+  <h2 style="text-align:center; margin-bottom:1.5rem;">Kuliner</h2>
+  <div class="destinations">
+    <div class="card reveal">
+      <img src="images/Kuliner/satemadura.jpg" alt="Sate Madura">
+      <h3>Sate Madura, Jawa Timur</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/rendang.jpg" alt="Rendang Padang">
+      <h3>Rendang, Sumatera Barat</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/pempek.jpg" alt="Pempek">
+      <h3>Pempek, Palembang (Sumatera Selatan)</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/nasiliwet.jpg" alt="Nasi Liwet Solo">
+      <h3>Nasi Liwet, Solo (Jawa Tengah)</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/gudeg.jpg" alt="Gudeg Yogyakarta">
+      <h3>Gudeg, Yogyakarta</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/nasipadang.jpg" alt="Nasi Padang">
+      <h3>Nasi Padang, Sumatera Barat</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/sotobanjar.jpg" alt="Soto Banjar">
+      <h3>Soto Banjar, Kalimantan Selatan</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/tinutuan.jpg" alt="Tinutuan">
+      <h3>Tinutuan (Bubur Manado), Sulawesi Utara</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/lawar.jpg" alt="Lawar Bali">
+      <h3>Lawar, Bali</h3>
+    </div>
+    <div class="card reveal">
+      <img src="images/Kuliner/papeda.jpg" alt="Papeda">
+      <h3>Papeda, Papua</h3>
+    </div>
+  </div>
+</section>
+
+
+
+  <section id="panduan" class="reveal">
+  <h2 style="text-align:center; margin-bottom:1.5rem;">Panduan Wisata</h2>
+  <div class="destinations">
+    <div class="card reveal">
+      <img src="images/panduan/transportasi.jpg" alt="Transportasi Umum">
+      <h3>Transportasi</h3>
+      <p style="padding: 0 1rem 1rem;">Gunakan Gojek/Grab di kota besar. Di daerah wisata terpencil, motor sewaan atau travel lokal bisa jadi pilihan.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/panduan/etika.jpg" alt="Etika Budaya">
+      <h3>Etika Budaya Lokal</h3>
+      <p style="padding: 0 1rem 1rem;">Hormati adat setempat. Misalnya, berpakaian sopan saat ke pura di Bali, dan hindari menyentuh kepala orang lain.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/panduan/barang.png" alt="Barang Bawaan">
+      <h3>Barang yang Dibawa</h3>
+      <p style="padding: 0 1rem 1rem;">Bawa sunscreen, topi, power bank, dan pakaian yang nyaman. Sediakan uang tunai untuk tempat yang tidak menerima e-wallet.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/panduan/biaya.jpg" alt="Biaya Perjalanan">
+      <h3>Perkiraan Biaya</h3>
+      <p style="padding: 0 1rem 1rem;">Biaya rata-rata: Rp20.000–50.000 untuk tiket masuk, Rp15.000–30.000 untuk makan, Rp100.000+ untuk penginapan.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/panduan/sinyal.jpg" alt="Sinyal dan Internet">
+      <h3>Sinyal & Internet</h3>
+      <p style="padding: 0 1rem 1rem;">Beli kartu SIM lokal (Telkomsel/XL) untuk sinyal kuat. Gunakan Wi-Fi hotel untuk hemat kuota saat tidak bepergian.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/panduan/kesehatan.png" alt="Kesehatan & Darurat">
+      <h3>Kesehatan & Darurat</h3>
+      <p style="padding: 0 1rem 1rem;">Catat lokasi puskesmas/RS terdekat. Simpan kontak darurat, bawa obat pribadi, dan hindari air mentah atau makanan yang tidak bersih.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/panduan/aplikasi.jpg" alt="Aplikasi Travel">
+      <h3>Aplikasi Travel</h3>
+      <p style="padding: 0 1rem 1rem;">Gunakan Google Maps, Traveloka, KAI Access, Gojek/Grab, dan “Wonderful Indonesia” untuk membantu perjalanan kamu.</p>
+    </div>
+  </div>
+</section>
+
+<section id="rencana" class="reveal">
+  <h2 style="text-align:center; margin-bottom:1.5rem;">Rencanakan Perjalanan Anda</h2>
+  <div class="destinations">
+    <div class="card reveal">
+      <img src="images/rencana/itenerary.jpg" alt="Itinerary">
+      <h3>🗓️ Itinerary Harian</h3>
+      <p style="padding: 0 1rem 1rem;">Gunakan itinerary 3–5 hari untuk Bali, Yogyakarta, atau Raja Ampat yang siap pakai.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/rencana/aktivitas.jpg" alt="Aktivitas">
+      <h3>🎯 Aktivitas Favorit</h3>
+      <p style="padding: 0 1rem 1rem;">Nikmati hiking di Bromo, menyelam di Derawan, atau kulineran di Sumatera Barat.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/rencana/destinasi.jpg" alt="Destinasi Minat">
+      <h3>📍 Pilih Sesuai Minat</h3>
+      <p style="padding: 0 1rem 1rem;">Temukan tempat terbaik untuk kamu yang suka budaya, alam, petualangan, atau relaksasi.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/rencana/anggaran.png" alt="Anggaran">
+      <h3>💼 Estimasi Anggaran</h3>
+      <p style="padding: 0 1rem 1rem;">Biaya liburan bisa hemat atau mewah — mulai Rp300.000 hingga Rp1.000.000 per hari.</p>
+    </div>
+    <div class="card reveal">
+      <img src="images/rencana/cuaca.png" alt="Cuaca">
+      <h3>🌦️ Cuaca & Musim</h3>
+      <p style="padding: 0 1rem 1rem;">Cek musim terbaik ke lokasi tujuan — hindari hujan, nikmati langit cerah!</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+  <section id="kontak">
+    <h2 style="text-align:center; margin-bottom:1rem;">Kontak Kami</h2>
+    <p style="text-align:center; max-width:600px; margin:auto;">
+      Untuk informasi lebih lanjut mengenai destinasi wisata dalam negeri, hubungi kami melalui email: <strong>info@exploreindonesia.id</strong>
+    </p>
+  </section>
+
+<section id="tentang" class="reveal">
+  <h2 style="text-align:center; margin-bottom:1rem;">Tentang Website Ini</h2>
+  <p style="max-width: 800px; margin: auto; text-align: center; font-size: 1rem; line-height: 1.7;">
+    <strong>Explore Indonesia - Pesona Wisata Nusantara</strong> adalah website informasi pariwisata yang dirancang untuk memperkenalkan keindahan alam, budaya, dan kuliner dari berbagai daerah di Indonesia. 
+    Website ini menyediakan panduan destinasi populer, akomodasi, kuliner khas daerah, dan tips perjalanan bagi wisatawan lokal maupun mancanegara.
+    Dengan desain yang sederhana dan interaktif, kami berharap website ini dapat membantu pengunjung dalam merencanakan perjalanan wisata mereka secara mudah, nyaman, dan menyenangkan.
+  </p>
+</section>
+
+  <footer>
+    <p>&copy; 2025 Explore Indonesia. Semua Hak Dilindungi.</p>
+  </footer>
+
+  <button onclick="scrollToTop()" class="scroll-top-btn" id="scrollTopBtn">^</button>
+
+  
+
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById("navbar");
+    nav.classList.toggle("hidden");
+  }
+
+  const scrollBtn = document.getElementById("scrollTopBtn");
+  window.onscroll = function () {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+      scrollBtn.style.display = "block";
+    } else {
+      scrollBtn.style.display = "none";
+    }
+  };
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function revealOnScroll() {
+    const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach(function (el) {
+      const windowHeight = window.innerHeight;
+      const revealTop = el.getBoundingClientRect().top;
+      const revealPoint = 100;
+
+      if (revealTop < windowHeight - revealPoint) {
+        el.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', revealOnScroll);
+  window.addEventListener('load', revealOnScroll);
+</script>
+</body>
+</html>
